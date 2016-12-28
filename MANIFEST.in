@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include delcomp *.css
+recursive-include delcomp *.csv
+recursive-include delcomp *.html
+recursive-include delcomp *.ico
+recursive-include delcomp *.js
+recursive-include delcomp *.json
+recursive-include delcomp *.md
+recursive-include delcomp *.png
+recursive-include delcomp *.py
+recursive-include delcomp *.svg
+recursive-include delcomp *.txt
+recursive-exclude delcomp *.pyc
