@@ -47,7 +47,8 @@ app_license = "MIT"
 
 # before_install = "delcomp.install.before_install"
 # after_install = "delcomp.install.after_install"
-fixtures = ["Role", "Custom Field", "Custom DocPerm"]
+# "Custom DocPerm" , "Custom Script"
+fixtures = ["Role", "Custom Field"]
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
