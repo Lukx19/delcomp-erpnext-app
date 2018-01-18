@@ -1,0 +1,8 @@
+{
+	"css/delcomp.css": [
+		"public/css/delcomp.css"
+	],
+	"js/delcomp.min.js": [
+		"public/js/delcomp.js"
+	]
+}

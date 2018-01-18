@@ -15,12 +15,12 @@ app_license = "MIT"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/delcomp/css/delcomp.css"
-# app_include_js = "/assets/delcomp/js/delcomp.js"
+app_include_css = "/assets/delcomp/css/delcomp.css"
+app_include_js = "/assets/delcomp/js/delcomp.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/delcomp/css/delcomp.css"
-# web_include_js = "/assets/delcomp/js/delcomp.js"
+web_include_css = "/assets/delcomp/css/delcomp.css"
+web_include_js = "/assets/delcomp/js/delcomp.js"
 
 # Home Pages
 # ----------
@@ -48,7 +48,7 @@ app_license = "MIT"
 # before_install = "delcomp.install.before_install"
 # after_install = "delcomp.install.after_install"
 # "Custom DocPerm" , "Custom Script"
-fixtures = ["Role", "Custom Field"]
+fixtures = ["Custom Field"]
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
