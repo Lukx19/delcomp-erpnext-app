@@ -5,9 +5,9 @@ from . import __version__ as app_version
 app_name = "delcomp"
 app_title = "Delcomp"
 app_publisher = "Lukas Jelinek"
-app_description = "Changes to Erpnext for Delcomp,s.r.o."
+app_description = "Erpnext changes for Delcomp,s.r.o."
 app_icon = "octicon octicon-file-directory"
-app_color = "orange"
+app_color = "brown"
 app_email = "lukx19@gmail.com"
 app_license = "MIT"
 
@@ -19,8 +19,21 @@ app_include_css = "/assets/delcomp/css/delcomp.css"
 app_include_js = "/assets/delcomp/js/delcomp.js"
 
 # include js, css files in header of web template
-web_include_css = "/assets/delcomp/css/delcomp.css"
-web_include_js = "/assets/delcomp/js/delcomp.js"
+# web_include_css = "/assets/delcomp/css/delcomp.css"
+# web_include_js = "/assets/delcomp/js/delcomp.js"
+
+# include js in page
+# page_js = {"page" : "public/js/file.js"}
+
+# include js in doctype views
+# doctype_js = {"doctype" : "public/js/doctype.js"}
+# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
+# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+
+# "Custom DocPerm" , "Custom Script"
+# -----------
+# fixtures = ["Custom Field"]
 
 # Home Pages
 # ----------
@@ -47,8 +60,7 @@ web_include_js = "/assets/delcomp/js/delcomp.js"
 
 # before_install = "delcomp.install.before_install"
 # after_install = "delcomp.install.after_install"
-# "Custom DocPerm" , "Custom Script"
-fixtures = ["Custom Field"]
+
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config

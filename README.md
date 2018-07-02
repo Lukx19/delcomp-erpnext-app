@@ -1,6 +1,6 @@
 ## Delcomp
 
-Changes to Erpnext for Delcomp,s.r.o.
+Erpnext changes for Delcomp,s.r.o.
 
 #### License
 

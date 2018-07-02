@@ -6,7 +6,7 @@ def get_data():
 	return [
 		{
 			"module_name": "Delcomp",
-			"color": "orange",
+			"color": "brown",
 			"icon": "octicon octicon-file-directory",
 			"type": "module",
 			"label": _("Delcomp")

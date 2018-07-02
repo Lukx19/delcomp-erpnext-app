@@ -1,5 +1,5 @@
 var getRow = function (frm) {
-  rows = 0
+  var rows = 0
   $.each(frm.doc.time_logs, function (i, d) {
     rows = rows + 1
   });
@@ -31,7 +31,8 @@ frappe.ui.form.on("Timesheet", {
     }
   },
   from_date: function (frm) {
-    row = getRow(frm)
+    var row = getRow(frm)
+    alert("from_date"+ row.from_date)
     frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
     if (!frm.doc.to_date && !frm.doc.end_date) {
       frm.set_value("to_date", frm.doc.from_date);
@@ -43,7 +44,7 @@ frappe.ui.form.on("Timesheet", {
   },
 
   to_date: function (frm) {
-    row = getRow(frm)
+    var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
     if (!frm.doc.from_date && !frm.doc.start_date) {
       frm.set_value("from_date", frm.doc.to_date);
@@ -55,13 +56,13 @@ frappe.ui.form.on("Timesheet", {
   },
 
   project: function (frm) {
-    row = getRow(frm)
+    var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
     frm.refresh_field("time_logs")
   },
 
   activity: function (frm) {
-    row = getRow(frm)
+    var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "activity_type", frm.doc.activity)
     frm.refresh_field("time_logs")
   },
