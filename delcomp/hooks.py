@@ -27,9 +27,9 @@ app_include_js = "/assets/js/delcomp.min.js"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {"timesheet" : "public/js/timesheet_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
+doctype_calendar_js = {"timesheet" : "public/js/timesheet_calendar.js"}
 
 # "Custom DocPerm" , "Custom Script"
 # -----------
