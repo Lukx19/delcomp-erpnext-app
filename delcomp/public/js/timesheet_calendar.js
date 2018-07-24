@@ -1,12 +1,12 @@
 frappe.views.calendar["Timesheet"] = {
     field_map: {
-        "start": "start_date",
-        "end": "end_date",
+        "start": "from_date",
+        "end": "to_date",
         "name": "parent",
         "id": "name",
         "allDay": "allDay",
         "child_name": "name",
-        "title": "employee_name"
+        "title": "title"
     },
     style_map: {
         "0": "info",
@@ -28,5 +28,5 @@ frappe.views.calendar["Timesheet"] = {
             "label": __("Employee")
         }
     ],
-    get_events_method: "erpnext.projects.doctype.timesheet.timesheet.get_events"
+    get_events_method: "delcomp.delcomp.timesheet.timesheet.get_events"
 }

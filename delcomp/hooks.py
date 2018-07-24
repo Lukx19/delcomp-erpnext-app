@@ -27,9 +27,9 @@ app_include_js = "/assets/js/delcomp.min.js"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-doctype_list_js = {"timesheet" : "public/js/timesheet_list.js"}
+doctype_list_js = {"Timesheet" : "public/js/timesheet_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-doctype_calendar_js = {"timesheet" : "public/js/timesheet_calendar.js"}
+doctype_calendar_js = {"Timesheet" : "public/js/timesheet_calendar.js"}
 
 # "Custom DocPerm" , "Custom Script"
 # -----------
@@ -83,12 +83,17 @@ doctype_calendar_js = {"timesheet" : "public/js/timesheet_calendar.js"}
 # ---------------
 # Hook on document methods and events
 
+doc_events = {
+	"Timesheet": {
+        "before_save": "delcomp.delcomp.timesheet.timesheet.validate",
+	}
+}
 # doc_events = {
-# 	"*": {
+# 	"Timesheet": {
 # 		"on_update": "method",
 # 		"on_cancel": "method",
 # 		"on_trash": "method"
-#	}
+# 	}
 # }
 
 # Scheduled Tasks
