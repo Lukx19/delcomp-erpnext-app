@@ -54,7 +54,7 @@ def get_events(start, end, filters=None):
             activity,
 			`tabTimesheet`.project,
             `tabTimesheet`.to_date as to_date,
-			CONCAT(employee_name,' \n Projekt: ',`tabTimesheet`.project,'\n Aktivita: ',activity,' \n Úloha: ',`tabTimesheet`.task,'\n', ' (', ROUND(total_hours,2),' hrs)') as title
+			CONCAT(employee_name,' \n Projekt: ',`tabTimesheet`.project,'\n Aktivita: ',activity,' \n Úloha: ',`tabTimesheet`.task_name,'\n', ' (', ROUND(total_hours,2),' hrs)') as title
 		from `tabTimesheet`, `tabTimesheet Detail`
 		where `tabTimesheet Detail`.parent = `tabTimesheet`.name
 		    and `tabTimesheet`.docstatus < 2

@@ -14,7 +14,9 @@ var getRow = function (frm) {
 
 frappe.ui.form.on("Timesheet", {
   setup: function (frm) {
-    console.log("setup")
+    // console.log(frm.doc.task_name)
+    // frm.doc.task_name = "name"
+    // console.log(frm.doc.task_name)
     frm.fields_dict['project'].get_query = function () {
       return {
         filters: {
@@ -24,6 +26,7 @@ frappe.ui.form.on("Timesheet", {
       }
     }
 
+    frm.add_fetch('task', 'subject', 'task_name')
     frm.fields_dict['task'].get_query = function () {
       return {
         filters: {
