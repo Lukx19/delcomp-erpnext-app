@@ -85,7 +85,11 @@ doctype_calendar_js = {"Timesheet" : "public/js/timesheet_calendar.js"}
 
 doc_events = {
 	"Timesheet": {
-        "before_save": "delcomp.delcomp.timesheet.timesheet.validate",
+		"before_save": "delcomp.delcomp.timesheet.timesheet.validate",
+	},
+	"Project": {
+		"onload": "delcomp.delcomp.doctype.project.override",
+		"validate":"delcomp.delcomp.doctype.project.override",
 	}
 }
 # doc_events = {
