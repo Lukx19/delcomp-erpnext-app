@@ -15,6 +15,30 @@ frappe.query_reports["Project Summary"] = {
             "label": __("To Date"),
             "fieldtype": "Date",
 			"default": frappe.datetime.year_end()
-        },
+		},
+		{
+			"fieldname": "project",
+			"label": __("Project"),
+			"fieldtype": "Link",
+			"options": "Project"
+		},
+		{
+			"fieldname": "task",
+			"label": __("Task"),
+			"fieldtype": "Link",
+			"options": "Task",
+			"get_query": function () {
+				let project = frappe.query_report.get_filter_value('project');
+				if (!project) {
+					frappe.throw(__("Please select Project first"));
+				}
+				return {
+					"filters": {
+						"project": ["in", project],
+					}
+				}
+			}
+
+		}
 	]
 }

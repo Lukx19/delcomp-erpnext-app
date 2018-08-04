@@ -19,7 +19,15 @@ def execute(filters=None):
 
 def get_column():
 	return [
-		_("Project") + ":Link/Project:120", _("Task name") + "::150", _("Employee Name") + "::150",  _("Budget") + "::150", _("Bonus") + "::150", _("Vyplatene zamestnancovi") + "::150", _("Zamestnanec odpracoval") + "::150", _("Celkovo vyplatene") + "::150", _("Bonus podla hodin") + "::15"
+		_("Project") + ":Link/Project:120",
+		_("Task name") + "::150",
+		_("Employee Name") + "::150",
+		_("Budget") + ":Currency:70",
+		_("Bonus") + ":Currency:70",
+		_("Payed to emp") + ":Currency:70",
+		_("Time worked by emp") + ":Float:70",
+		_("Work hours in task") + ":Float:70",
+		_("Bonus based on work hours") + ":Currency:15"
 	]
 
 def get_timesheet_conditions(filters):
@@ -30,8 +38,6 @@ def get_timesheet_conditions(filters):
 		conditions += " AND `tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)"
 	if filters.get("project"):
 		conditions += " AND `tabTimesheet`.project = %(project)s"
-	if filters.get("employee"):
-		conditions += " AND `tabTimesheet`.employee = %(employee)s"
 	if filters.get("task"):
 		conditions += " AND `tabTimesheet`.task = %(task)s"
 	match_conditions = build_match_conditions("Timesheet")
@@ -64,19 +70,48 @@ def get_task_conditions(filters):
 def get_data(filters):
 	query = """
 		WITH timesheet_data AS
-			(SELECT project ,employee_name,task_name,task, SUM(total_billable_hours) as hours_per_emp, SUM(total_billable_amount) as pay_per_emp
-			FROM `tabTimesheet` {timesheet_conds} GROUP BY project,employee,task),
-		task_data AS
-		 	(SELECT budget, (budget - `tabTask`.total_billing_amount) as bonus,`tabTask`.total_billing_amount,`tabTask`.name
-			 FROM `tabTask` {task_conds}),
-		task_total_hours AS
-			(SELECT  task, SUM(total_billable_hours) AS total_billing_hours, SUM(total_billable_amount) AS total_billing_amount2
-			FROM `tabTimesheet` {timesheet_conds} GROUP BY task),
-  		task_data_hours AS
-			(SELECT * FROM task_data JOIN task_total_hours ON  task_data.name = task_total_hours.task)
-  		SELECT project,task_name,employee_name, budget,bonus,pay_per_emp,hours_per_emp,total_billing_hours, ROUND(bonus * (hours_per_emp/total_billing_hours),2) AS bonus_based_on_hours
-		FROM timesheet_data JOIN task_data_hours ON timesheet_data.task = task_data_hours.task """.format(timesheet_conds=get_timesheet_conditions(filters), task_conds= get_task_conditions(filters))
-	frappe.errprint(query)
+			(SELECT
+				`tabTimesheet`.project ,
+				employee_name,
+				task_name,
+				task,
+				SUM(`tabTimesheet`.total_billable_hours) as hours_per_emp,
+				SUM(`tabTimesheet`.total_billable_amount) as pay_per_emp
+			FROM `tabTimesheet`
+			{timesheet_conds}
+			GROUP BY project,employee,task),
+		task_budget AS
+		 	(SELECT
+			 	budget,
+			 	`tabTask`.name
+			 FROM `tabTask`
+			 {task_conds}),
+		task_totals AS
+			(SELECT
+				task,
+				SUM(total_billable_hours) AS total_billing_hours,
+				SUM(total_billable_amount) AS total_billing_amount
+			FROM `tabTimesheet`
+			{timesheet_conds}
+			GROUP BY task),
+  		task_data AS
+			(SELECT *
+			FROM task_budget
+			JOIN task_totals ON  task_budget.name = task_totals.task)
+  		SELECT
+			project,
+			task_name,
+			employee_name,
+			budget,
+			(budget - total_billing_amount) as bonus,
+			pay_per_emp,
+			hours_per_emp,
+			total_billing_hours,
+			ROUND((budget - total_billing_amount) * (hours_per_emp/total_billing_hours),3) AS bonus_based_on_hours
+		FROM timesheet_data
+		JOIN task_data ON timesheet_data.task = task_data.task
+		ORDER BY project, task_name
+		""".format(timesheet_conds=get_timesheet_conditions(filters), task_conds= get_task_conditions(filters))
 	data = frappe.db.sql(query,filters,as_list=1)
 	return data
 
