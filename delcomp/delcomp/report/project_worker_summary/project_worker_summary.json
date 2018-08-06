@@ -6,7 +6,7 @@
  "doctype": "Report",
  "idx": 0,
  "is_standard": "Yes",
- "modified": "2018-08-02 16:55:31.364125",
+ "modified": "2018-08-03 09:15:36.005471",
  "modified_by": "Administrator",
  "module": "Delcomp",
  "name": "Project Worker Summary",
@@ -21,6 +21,9 @@
   },
   {
    "role": "Projects Manager"
+  },
+  {
+   "role": "Project Higher Manager"
   }
  ]
 }

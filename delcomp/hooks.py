@@ -16,7 +16,7 @@ app_license = "MIT"
 
 # include js, css files in header of desk.html
 app_include_css = "/assets/css/delcomp.min.css"
-app_include_js = "/assets/js/delcomp.min.js"
+app_include_js = ["/assets/js/delcomp.min.js"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/delcomp/css/delcomp.css"
@@ -27,9 +27,14 @@ app_include_js = "/assets/js/delcomp.min.js"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-doctype_list_js = {"Timesheet" : "public/js/timesheet_list.js"}
+doctype_list_js = {
+					"Timesheet": "public/js/timesheet_list.js"
+					}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-doctype_calendar_js = {"Timesheet" : "public/js/timesheet_calendar.js"}
+doctype_calendar_js = {
+						"Timesheet": "public/js/timesheet_calendar.js",
+						"Project": "public/js/project_calendar.js"
+						}
 
 # "Custom DocPerm" , "Custom Script"
 # -----------
@@ -86,6 +91,7 @@ doctype_calendar_js = {"Timesheet" : "public/js/timesheet_calendar.js"}
 doc_events = {
 	"Timesheet": {
 		"before_save": "delcomp.delcomp.timesheet.timesheet.validate",
+		"before_update_after_submit": "delcomp.delcomp.timesheet.timesheet.validate_after_submit",
 	},
 	"Project": {
 		"onload": "delcomp.delcomp.doctype.project.override",
