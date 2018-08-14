@@ -6,10 +6,9 @@ import json
 from frappe import _
 from erpnext.controllers.queries import get_match_cond
 from frappe.utils import flt, time_diff_in_hours, get_datetime, getdate, cint
+from erpnext.projects.doctype.timesheet.timesheet import get_activity_cost
 
 def validate(doc, method):
-	if doc.get("__islocal"):
-		return
 	latest = doc
 	row = None
 	if len(latest.time_logs) == 0:
@@ -22,16 +21,17 @@ def validate(doc, method):
 	row.project = latest.project
 	row.task = latest.task
 	row.activity_type = latest.activity
+	billable_hours =0
 	if latest.billable:
 		row.billable = True
 		row.billing_hours = row.hours
+		billable_hours =row.hours
 	else:
 		row.billable = False
 		row.billing_hours = 0
-	latest.validate()
+	latest.title = "{}-{}-{}-{} hrs".format(latest.employee_name,str(latest.project),latest.task_name,str(billable_hours))
 
-def printState(doc, method):
-	frappe.errprint(method)
+	latest.validate()
 
 def update_billing_hours(doc, table):
 	if doc.billable:
@@ -41,9 +41,10 @@ def update_billing_hours(doc, table):
 		table.billing_hours = 0
 
 def update_billing_amount(doc, table):
-	frappe.errprint(str(doc.billable) + "  " +str(table.billing_rate))
+	rate = get_activity_cost(doc.employee, doc.activity).billing_rate
+	frappe.errprint(str(doc.billable) + "  " +str(rate))
 	if doc.billable:
-		table.billing_amount = table.billing_hours * table.billing_rate
+		table.billing_amount = table.billing_hours * rate
 	else:
 		table.billing_amount = 0
 
@@ -69,8 +70,14 @@ def calculate_total_amounts(doc):
 
 
 def validate_after_submit(doc, method):
+	frappe.errprint("valid after submit custom")
 	latest = doc
 	calculate_total_amounts(latest)
+	billable_hours =0
+	if latest.billable:
+		billable_hours =latest.total_billable_hours
+
+	latest.title = "{}-{}-{}-{} hrs".format(latest.employee_name,str(latest.project),latest.task_name,str(billable_hours))
 
 
 

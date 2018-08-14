@@ -90,19 +90,8 @@ home_page = "login"
 
 doc_events = {
 	"Timesheet": {
-		# "validate": "delcomp.delcomp.timesheet.timesheet.printState",
-		"after_save":"delcomp.delcomp.timesheet.timesheet.printState" ,
-		# "on_update": "delcomp.delcomp.timesheet.timesheet.printState",
-		"on_submit": "delcomp.delcomp.timesheet.timesheet.printState",
-		# "on_change": "delcomp.delcomp.timesheet.timesheet.printState",
-		"before_save": [
-			"delcomp.delcomp.timesheet.timesheet.validate",
-			"delcomp.delcomp.timesheet.timesheet.printState"
-			],
-		"before_update_after_submit": [
-			"delcomp.delcomp.timesheet.timesheet.validate_after_submit",
-			"delcomp.delcomp.timesheet.timesheet.printState"
-		],
+		"before_save": "delcomp.delcomp.timesheet.timesheet.validate",
+		"before_update_after_submit": "delcomp.delcomp.timesheet.timesheet.validate_after_submit",
 	},
 	"Project": {
 		"onload": "delcomp.delcomp.doctype.project.override",
