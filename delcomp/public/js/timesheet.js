@@ -11,9 +11,6 @@ var getRow = function (frm) {
   return row
 }
 
-var updateTimesheetTitle = function (frm) {
-  frm.set_value("title", frm.doc.employee_name + "-" + frm.doc.project + "-" + frm.doc.task_name + "-" + frm.doc.total_billable_hours + " hrs")
-}
 
 frappe.ui.form.on("Timesheet", {
   setup: function (frm) {
@@ -85,12 +82,9 @@ frappe.ui.form.on("Timesheet", {
     frappe.model.set_value(row.doctype, row.name, "billable", frm.doc.billable)
     frm.refresh_field("time_logs")
   },
-  total_billable_hours: function (frm) {
-    updateTimesheetTitle(frm)
-  },
+
 
   validate: function (frm) {
-   updateTimesheetTitle(frm)
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
     frappe.model.set_value(row.doctype, row.name, "task", frm.doc.task)
@@ -101,6 +95,5 @@ frappe.ui.form.on("Timesheet", {
     frappe.model.set_value(row.doctype, row.name, "hours", hours)
     frappe.model.set_value(row.doctype, row.name, "billable", frm.doc.billable)
     frm.refresh_field("time_logs")
-    updateTimesheetTitle(frm)
   }
 });

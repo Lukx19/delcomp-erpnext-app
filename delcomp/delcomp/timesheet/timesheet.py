@@ -21,15 +21,14 @@ def validate(doc, method):
 	row.project = latest.project
 	row.task = latest.task
 	row.activity_type = latest.activity
-	billable_hours =0
+
 	if latest.billable:
 		row.billable = True
 		row.billing_hours = row.hours
-		billable_hours =row.hours
+
 	else:
 		row.billable = False
 		row.billing_hours = 0
-	latest.title = "{}-{}-{}-{} hrs".format(latest.employee_name,str(latest.project),latest.task_name,str(billable_hours))
 
 	latest.validate()
 
@@ -77,7 +76,6 @@ def validate_after_submit(doc, method):
 	if latest.billable:
 		billable_hours =latest.total_billable_hours
 
-	latest.title = "{}-{}-{}-{} hrs".format(latest.employee_name,str(latest.project),latest.task_name,str(billable_hours))
 
 
 
