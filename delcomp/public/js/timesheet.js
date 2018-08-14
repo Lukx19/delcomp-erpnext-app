@@ -78,6 +78,8 @@ frappe.ui.form.on("Timesheet", {
   },
 
   billable: function (frm) {
+    if (frm.status != 0)
+      return
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "billable", frm.doc.billable)
     frm.refresh_field("time_logs")
@@ -85,6 +87,8 @@ frappe.ui.form.on("Timesheet", {
 
 
   validate: function (frm) {
+    if (frm.status != 0)
+      return
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
     frappe.model.set_value(row.doctype, row.name, "task", frm.doc.task)
