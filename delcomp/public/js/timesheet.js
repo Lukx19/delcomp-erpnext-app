@@ -11,7 +11,9 @@ var getRow = function (frm) {
   return row
 }
 
-
+var updateTimesheetTitle= function(frm){
+  frm.set_value("title", frm.doc.employee_name + "-" + frm.doc.project + "-" + frm.doc.task_name + "-" + frm.doc.total_billable_hours + " hrs")
+}
 frappe.ui.form.on("Timesheet", {
   setup: function (frm) {
     // console.log(frm.doc.task_name)
@@ -38,15 +40,15 @@ frappe.ui.form.on("Timesheet", {
 
 
   onload: function (frm) {
-    console.log("onload")
-    if (frm.doc.end_date && frm.doc.start_date && frm.doc.__islocal) {
-      frm.set_value("from_date", frm.doc.start_date);
-      frm.set_value("to_date", frm.doc.end_date);
-    }
+    console.log("onload- js")
+    // if (frm.doc.end_date && frm.doc.start_date && frm.doc.__islocal) {
+    //   frm.set_value("from_date", frm.doc.start_date);
+    //   frm.set_value("to_date", frm.doc.end_date);
+    // }
   },
   from_date: function (frm) {
     var row = getRow(frm)
-    console.log("row in from date", row.name)
+    // console.log("row in from date", row.name)
 
     frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
     if (!frm.doc.to_date && !frm.doc.end_date) {
@@ -88,8 +90,17 @@ frappe.ui.form.on("Timesheet", {
     frm.refresh_field("time_logs")
   },
 
+  billable: function (frm) {
+    var row = getRow(frm)
+    frappe.model.set_value(row.doctype, row.name, "billable", frm.doc.billable)
+    frm.refresh_field("time_logs")
+  },
+  total_billable_hours: function (frm) {
+    updateTimesheetTitle(frm)
+  },
   refresh: function (frm) {
-    console.log("refresh")
+    console.log("refresh - js")
+   updateTimesheetTitle(frm)
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
     frappe.model.set_value(row.doctype, row.name, "task", frm.doc.task)
@@ -98,20 +109,22 @@ frappe.ui.form.on("Timesheet", {
     frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
     var hours = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), "seconds") / 3600
     frappe.model.set_value(row.doctype, row.name, "hours", hours)
+    frappe.model.set_value(row.doctype, row.name, "billable", frm.doc.billable)
     frm.refresh_field("time_logs")
   },
-  validate: function (frm) {
-    console.log("validate")
-    // console.log("validate", row.hours)
-    // var row = getRow(frm)
-    // frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
-    // frappe.model.set_value(row.doctype, row.name, "task", frm.doc.task)
-    // frappe.model.set_value(row.doctype, row.name, "activity_type", frm.doc.activity)
-    // frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
-    // frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
-    // var hours = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), "seconds") / 3600
-    // frappe.model.set_value(row.doctype, row.name, "hours", hours)
-    // frm.refresh_field("time_logs")
-    // return true
-  }
+
+  // validate: function (frm) {
+  //   // frm.reload_doc()
+  //   console.log("validate - js")
+  //   // console.log("validate", row.hours)
+  //   // var row = getRow(frm)
+  //   // frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
+  //   // frappe.model.set_value(row.doctype, row.name, "task", frm.doc.task)
+  //   // frappe.model.set_value(row.doctype, row.name, "activity_type", frm.doc.activity)
+  //   // frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
+  //   // frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
+  //   // var hours = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), "seconds") / 3600
+  //   // frappe.model.set_value(row.doctype, row.name, "hours", hours)
+  //   // frm.refresh_field("time_logs")
+  // }
 });

@@ -30,6 +30,9 @@ def validate(doc, method):
 		row.billing_hours = 0
 	latest.validate()
 
+def printState(doc, method):
+	frappe.errprint(method)
+
 def update_billing_hours(doc, table):
 	if doc.billable:
 		if flt(table.billing_hours) == 0.0:

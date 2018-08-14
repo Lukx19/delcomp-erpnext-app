@@ -26,7 +26,7 @@ app_include_js = ["assets/js/delcomp.min.js"]
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"Timesheet" : "public/js/timesheet.js"}
 doctype_list_js = {
 					"Timesheet": "public/js/timesheet_list.js"
 					}
@@ -90,8 +90,19 @@ home_page = "login"
 
 doc_events = {
 	"Timesheet": {
-		"before_save": "delcomp.delcomp.timesheet.timesheet.validate",
-		"before_update_after_submit": "delcomp.delcomp.timesheet.timesheet.validate_after_submit",
+		# "validate": "delcomp.delcomp.timesheet.timesheet.printState",
+		"after_save":"delcomp.delcomp.timesheet.timesheet.printState" ,
+		# "on_update": "delcomp.delcomp.timesheet.timesheet.printState",
+		"on_submit": "delcomp.delcomp.timesheet.timesheet.printState",
+		# "on_change": "delcomp.delcomp.timesheet.timesheet.printState",
+		"before_save": [
+			"delcomp.delcomp.timesheet.timesheet.validate",
+			"delcomp.delcomp.timesheet.timesheet.printState"
+			],
+		"before_update_after_submit": [
+			"delcomp.delcomp.timesheet.timesheet.validate_after_submit",
+			"delcomp.delcomp.timesheet.timesheet.printState"
+		],
 	},
 	"Project": {
 		"onload": "delcomp.delcomp.doctype.project.override",
