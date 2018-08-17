@@ -46,3 +46,20 @@ frappe.ui.form.on("Project", {
         update_contact(frm, "contact_2", "contact_2_view")
     }
 })
+
+frappe.ui.form.on("Project Task", {
+    setup: function (frm, cdt, cdn) {
+        frm.fields_dict['title_template'].get_query = function () {
+            return {
+                filters: {
+                    'disabled': ["=", "False"]
+                }
+            }
+        }
+    },
+
+    title_template: function (frm, cdt, cdn) {
+        frm.add_fetch('title_template', 'title', 'title')
+    }
+})
+

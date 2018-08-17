@@ -28,7 +28,8 @@ app_include_js = ["assets/js/delcomp.min.js"]
 # include js in doctype views
 doctype_js = {
 				"Timesheet": "public/js/timesheet.js",
-				"Project": "public/js/project.js"
+				"Project": "public/js/project.js",
+				"Task":"public/js/task.js"
 				}
 doctype_list_js = {
 					"Timesheet": "public/js/timesheet_list.js"

@@ -24,19 +24,3 @@ def is_row_updated(self, row, existing_task_data):
 
 def override(doc, method):
 	Project.is_row_updated = is_row_updated
-
-
-@frappe.whitelist()
-def get_contact_display(address_dict):
-	if not address_dict:
-		return
-
-	if not isinstance(address_dict, dict):
-		address_dict = frappe.db.get_value("Address", address_dict, "*", as_dict=True) or {}
-
-	name, template = get_address_templates(address_dict)
-
-	try:
-		return frappe.render_template(template, address_dict)
-	except TemplateSyntaxError:
-		frappe.throw(_("There is an error in your Contact Template {0}").format(name))
