@@ -27,7 +27,8 @@ frappe.ui.form.on("Timesheet", {
     frm.fields_dict['task'].get_query = function () {
       return {
         filters: {
-          'project': frm.doc.project
+          'project': frm.doc.project,
+          'status': ["!=", "Closed"]
         }
       }
     }
