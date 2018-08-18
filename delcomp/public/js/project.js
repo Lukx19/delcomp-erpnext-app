@@ -44,6 +44,13 @@ frappe.ui.form.on("Project", {
     },
     contact_2: function (frm) {
         update_contact(frm, "contact_2", "contact_2_view")
+    },
+    refresh: function (frm) {
+        $.each(frm.doc.tasks || [], function (i, d) {
+            if (d.title_template) {
+                d.title = d.title_template
+            }
+        })
     }
 })
 
