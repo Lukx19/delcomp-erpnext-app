@@ -96,6 +96,9 @@ doc_events = {
 	"Timesheet": {
 		"before_save": "delcomp.delcomp.timesheet.timesheet.validate",
 		"before_update_after_submit": "delcomp.delcomp.timesheet.timesheet.validate_after_submit",
+	},
+	"Item": {
+		"before_save":"delcomp.delcomp.doctype.item.gen_UOM"
 	}
 }
 # doc_events = {
