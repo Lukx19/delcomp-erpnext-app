@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import frappe
 import json
 
@@ -9,6 +7,7 @@ from frappe.utils import flt, time_diff_in_hours, get_datetime, getdate, cint
 from erpnext.projects.doctype.timesheet.timesheet import get_activity_cost
 
 def validate(doc, method):
+	# frappe.errprint("validate")
 	latest = doc
 	row = None
 	if len(latest.time_logs) == 0:
@@ -29,7 +28,9 @@ def validate(doc, method):
 	else:
 		row.billable = False
 		row.billing_hours = 0
-
+	rate = get_activity_cost(doc.employee, doc.activity)
+	row.billing_rate = rate.billing_rate
+	row.costing_rate = rate.costing_rate
 	latest.validate()
 
 def update_billing_hours(doc, table):
@@ -41,7 +42,7 @@ def update_billing_hours(doc, table):
 
 def update_billing_amount(doc, table):
 	rate = get_activity_cost(doc.employee, doc.activity).billing_rate
-	frappe.errprint(str(doc.billable) + "  " +str(rate))
+	# frappe.errprint(str(doc.billable) + "  " +str(rate))
 	if doc.billable:
 		table.billing_amount = table.billing_hours * rate
 	else:
@@ -69,7 +70,7 @@ def calculate_total_amounts(doc):
 
 
 def validate_after_submit(doc, method):
-	frappe.errprint("valid after submit custom")
+	# frappe.errprint("valid after submit custom")
 	latest = doc
 	calculate_total_amounts(latest)
 	billable_hours =0

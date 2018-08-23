@@ -40,7 +40,7 @@ frappe.ui.form.on("Timesheet", {
 
     frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
     if (!frm.doc.to_date && !frm.doc.end_date) {
-      frm.set_value("to_date", frm.doc.from_date);
+      frm.set_value("to_date", frm.doc.from_date)
       frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
     }
     var hours = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), "seconds") / 3600
@@ -52,7 +52,7 @@ frappe.ui.form.on("Timesheet", {
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "to_time", frm.doc.to_date)
     if (!frm.doc.from_date && !frm.doc.start_date) {
-      frm.set_value("from_date", frm.doc.to_date);
+      frm.set_value("from_date", frm.doc.to_date)
       frappe.model.set_value(row.doctype, row.name, "from_time", frm.doc.from_date)
     }
     var hours = moment(frm.doc.to_date).diff(moment(frm.doc.from_date), "seconds") / 3600
@@ -64,6 +64,8 @@ frappe.ui.form.on("Timesheet", {
     var row = getRow(frm)
     frappe.model.set_value(row.doctype, row.name, "project", frm.doc.project)
     frm.refresh_field("time_logs")
+    frm.set_value("task", "")
+    frm.set_value("task_name", "")
   },
 
   activity: function (frm) {
