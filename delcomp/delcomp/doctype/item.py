@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import frappe
 import json
 
@@ -19,7 +17,7 @@ def set_uom_value(doc, uom, val):
     row.conversion_factor = val
 
 def gen_UOM(doc, method):
-    frappe.errprint("gen")
+    # frappe.errprint("gen")
     # set length value if variant is used
     if doc.variant_attribute:
         for row in doc.attributes:
@@ -29,13 +27,13 @@ def gen_UOM(doc, method):
 
     if not (doc.length and doc.width and doc.height):
         return
-
     if doc.stock_uom == "ks":
+        #  calculate how many "ks" is one "bm" of goods
         m3 = doc.length * doc.width * doc.height / 1000000000
         m2 = doc.length * doc.width / 1000000
-        set_uom_value(doc, "bm", doc.length / 1000)
-        set_uom_value(doc, "m3", m3)
-        set_uom_value(doc, "m2", m2)
+        set_uom_value(doc, "bm", 1/(doc.length / 1000))
+        set_uom_value(doc, "m3", 1/m3)
+        set_uom_value(doc, "m2", 1/m2)
         doc.weight_per_unit = m3 * doc.density
     if doc.stock_uom == "bm":
         m3 = 1000 * doc.width * doc.height / 1000000000

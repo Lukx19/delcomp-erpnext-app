@@ -29,7 +29,9 @@ app_include_js = ["assets/js/delcomp.min.js"]
 doctype_js = {
 				"Timesheet": "public/js/timesheet.js",
 				"Project": "public/js/project.js",
-				"Task":"public/js/task.js"
+				"Task": "public/js/task.js",
+				"Purchase Receipt": "public/js/purchase_receipt.js",
+				"Delivery Note":"public/js/delivery_note.js",
 				}
 doctype_list_js = {
 					"Timesheet": "public/js/timesheet_list.js"
@@ -99,7 +101,11 @@ doc_events = {
 	},
 	"Item": {
 		"before_save":"delcomp.delcomp.doctype.item.gen_UOM"
-	}
+	},
+	"Purchase Receipt": {
+		"onload": "delcomp.delcomp.doctype.stock.override_get_item_details",
+		"validate":"delcomp.delcomp.doctype.stock.override_get_item_details",
+	},
 }
 # doc_events = {
 # 	"Timesheet": {
@@ -139,6 +145,6 @@ doc_events = {
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "delcomp.event.get_events"
+# 	"erpnext.stock.get_item_details.get_item_details": "delcomp.delcomp.doctype.stock.get_item_details"
 # }
 
