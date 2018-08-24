@@ -44,7 +44,7 @@ doctype_calendar_js = {
 
 # "Custom DocPerm" , "Custom Script"
 # -----------
-fixtures = ["Role"]
+fixtures = ["Role","Item Variant Settings"]
 
 # Home Pages
 # ----------

@@ -1,0 +1,210 @@
+[
+ {
+  "allow_rename_attribute_value": 0,
+  "do_not_update_variants": 0,
+  "docstatus": 0,
+  "doctype": "Item Variant Settings",
+  "fields": [
+   {
+    "field_name": "hub_sync_id"
+   },
+   {
+    "field_name": "item_group"
+   },
+   {
+    "field_name": "is_item_from_hub"
+   },
+   {
+    "field_name": "stock_uom"
+   },
+   {
+    "field_name": "disabled"
+   },
+   {
+    "field_name": "allow_alternative_item"
+   },
+   {
+    "field_name": "is_stock_item"
+   },
+   {
+    "field_name": "allow_transfer_for_manufacture"
+   },
+   {
+    "field_name": "is_fixed_asset"
+   },
+   {
+    "field_name": "asset_category"
+   },
+   {
+    "field_name": "asset_naming_series"
+   },
+   {
+    "field_name": "tolerance"
+   },
+   {
+    "field_name": "brand"
+   },
+   {
+    "field_name": "barcodes"
+   },
+   {
+    "field_name": "shelf_life_in_days"
+   },
+   {
+    "field_name": "end_of_life"
+   },
+   {
+    "field_name": "default_material_request_type"
+   },
+   {
+    "field_name": "valuation_method"
+   },
+   {
+    "field_name": "warranty_period"
+   },
+   {
+    "field_name": "weight_uom"
+   },
+   {
+    "field_name": "reorder_levels"
+   },
+   {
+    "field_name": "create_new_batch"
+   },
+   {
+    "field_name": "batch_number_series"
+   },
+   {
+    "field_name": "has_expiry_date"
+   },
+   {
+    "field_name": "retain_sample"
+   },
+   {
+    "field_name": "sample_quantity"
+   },
+   {
+    "field_name": "serial_no_series"
+   },
+   {
+    "field_name": "variant_based_on"
+   },
+   {
+    "field_name": "item_defaults"
+   },
+   {
+    "field_name": "is_purchase_item"
+   },
+   {
+    "field_name": "purchase_uom"
+   },
+   {
+    "field_name": "min_order_qty"
+   },
+   {
+    "field_name": "safety_stock"
+   },
+   {
+    "field_name": "lead_time_days"
+   },
+   {
+    "field_name": "delivered_by_supplier"
+   },
+   {
+    "field_name": "manufacturer"
+   },
+   {
+    "field_name": "manufacturer_part_no"
+   },
+   {
+    "field_name": "supplier_items"
+   },
+   {
+    "field_name": "country_of_origin"
+   },
+   {
+    "field_name": "customs_tariff_number"
+   },
+   {
+    "field_name": "sales_uom"
+   },
+   {
+    "field_name": "is_sales_item"
+   },
+   {
+    "field_name": "max_discount"
+   },
+   {
+    "field_name": "enable_deferred_revenue"
+   },
+   {
+    "field_name": "deferred_revenue_account"
+   },
+   {
+    "field_name": "no_of_months"
+   },
+   {
+    "field_name": "customer_items"
+   },
+   {
+    "field_name": "taxes"
+   },
+   {
+    "field_name": "inspection_required_before_purchase"
+   },
+   {
+    "field_name": "inspection_required_before_delivery"
+   },
+   {
+    "field_name": "quality_inspection_template"
+   },
+   {
+    "field_name": "is_sub_contracted_item"
+   },
+   {
+    "field_name": "weightage"
+   },
+   {
+    "field_name": "slideshow"
+   },
+   {
+    "field_name": "website_warehouse"
+   },
+   {
+    "field_name": "website_item_groups"
+   },
+   {
+    "field_name": "website_specifications"
+   },
+   {
+    "field_name": "total_projected_qty"
+   },
+   {
+    "field_name": "publish_in_hub"
+   },
+   {
+    "field_name": "hub_category_to_publish"
+   },
+   {
+    "field_name": "hub_warehouse"
+   },
+   {
+    "field_name": "synced_with_hub"
+   },
+   {
+    "field_name": "height"
+   },
+   {
+    "field_name": "width"
+   },
+   {
+    "field_name": "density"
+   },
+   {
+    "field_name": "variant_attribute"
+   }
+  ],
+  "modified": "2018-07-22 16:19:49.660744",
+  "name": "Item Variant Settings"
+ }
+]
