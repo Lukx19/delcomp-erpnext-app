@@ -19,11 +19,11 @@ def get_price_list_rate(args, item_doc, out):
 		if not price_list_rate and item_doc.variant_of:
 			# frappe.errprint("variant"+str(item_doc.variant_of))
 			price_list_rate = get_price_list_rate_for(args, item_doc.variant_of)
-			frappe.errprint("variant"+str(price_list_rate))
+			# frappe.errprint("variant"+str(price_list_rate))
 
 		if not price_list_rate:
 			price_list_rate = get_price_list_rate_general(args, item_doc.name, item_doc.variant_of)
-			frappe.errprint("general" + str(price_list_rate))
+			# frappe.errprint("general" + str(price_list_rate))
 
 		# insert in database
 		if not price_list_rate:
@@ -33,7 +33,7 @@ def get_price_list_rate(args, item_doc, out):
 
 		out.price_list_rate = flt(price_list_rate) * flt(args.plc_conversion_rate) \
 			/ flt(args.conversion_rate)
-		frappe.errprint("res"+str(out.price_list_rate)+"   "+ str(args.plc_conversion_rate) +"   "+ str(args.conversion_rate))
+		# frappe.errprint("res"+str(out.price_list_rate)+"   "+ str(args.plc_conversion_rate) +"   "+ str(args.conversion_rate))
 		if not out.price_list_rate and args.transaction_type=="buying":
 			from erpnext.stock.doctype.item.item import get_last_purchase_details
 			out.update(get_last_purchase_details(item_doc.name,
@@ -48,24 +48,24 @@ def get_price_list_rate_general(args, item_code, variant_template_code=None):
 	}
 
 	if variant_template_code:
-		frappe.errprint("variant set"+ str(variant_template_code))
+		# frappe.errprint("variant set"+ str(variant_template_code))
 		general_price_list_rate = get_item_price(item_price_args, item_code)
 		if not general_price_list_rate:
 			general_price_list_rate = get_item_price(item_price_args, variant_template_code)
 	else:
 		general_price_list_rate = get_item_price(item_price_args, item_code)
-	frappe.errprint("best matches"+str(general_price_list_rate))
+	# frappe.errprint("best matches"+str(general_price_list_rate))
 	item_price_data = None
 	conversion_factor = None
 
 	for price_entry in general_price_list_rate:
 		conversion_rate = get_conversion_factor(item_code, price_entry[2])["conversion_factor"]
-		frappe.errprint("********"+str(conversion_rate)+"   " + str(price_entry))
+		# frappe.errprint("********"+str(conversion_rate)+"   " + str(price_entry))
 		if conversion_rate:
 			conversion_factor = conversion_rate
 			item_price_data = [price_entry]
 			break
-		frappe.errprint("4" + item_code + "  " + str(general_price_list_rate) + str(conversion_factor))
+		# frappe.errprint("4" + item_code + "  " + str(general_price_list_rate) + str(conversion_factor))
 
 	if item_price_data:
 		# found uom -> stock uom -> uom
@@ -168,15 +168,13 @@ def get_item_price(args, item_code):
 		from `tabItem Price` {conditions}
 		order by uom desc, min_qty desc """.format(conditions=conditions), args)
 
-
-def override_get_item_details(doc, method):
-	frappe.errprint("custom"+ str(method))
-	erpnext.stock.get_item_details.get_price_list_rate = get_price_list_rate
-	erpnext.stock.get_item_details.get_price_list_rate_for = get_price_list_rate_for
-	erpnext.stock.get_item_details.get_item_price = get_item_price
-
 @frappe.whitelist()
 def overridejs_get_item_details():
 	erpnext.stock.get_item_details.get_price_list_rate = get_price_list_rate
 	erpnext.stock.get_item_details.get_price_list_rate_for = get_price_list_rate_for
 	erpnext.stock.get_item_details.get_item_price = get_item_price
+
+
+def override_get_item_details(doc, method):
+	# frappe.errprint("custom"+ str(method))
+	overridejs_get_item_details
