@@ -654,9 +654,20 @@
   "docstatus": 0,
   "doctype": "Role",
   "modified": "2018-08-03 08:53:15.979721",
-  "name": "Project Higher Manager",
+  "name": "Project Master Manager",
   "restrict_to_domain": null,
-  "role_name": "Project Higher Manager",
+  "role_name": "Project Master Manager",
+  "two_factor_auth": 0
+ },
+ {
+  "desk_access": 1,
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Role",
+  "modified": "2018-09-03 10:30:03.695352",
+  "name": "Stock Master Manager",
+  "restrict_to_domain": null,
+  "role_name": "Stock Master Manager",
   "two_factor_auth": 0
  }
 ]
