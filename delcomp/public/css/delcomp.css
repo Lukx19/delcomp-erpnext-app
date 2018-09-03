@@ -6,3 +6,19 @@
     height: 100% !important;
   }
 }
+
+@media (max-width: 767px){
+  .navbar-desk {
+    width: 70% !important;
+  }
+}
+
+@media (max-width: 991px){
+  #navbar-breadcrumbs {
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: 0px;
+  }
+}
