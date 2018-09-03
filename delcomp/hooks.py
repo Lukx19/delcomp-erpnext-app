@@ -32,7 +32,8 @@ doctype_js = {
 				"Task": "public/js/task.js",
 				"Purchase Receipt": "public/js/purchase_receipt.js",
 				"Stock Entry": "public/js/stock_entry.js",
-				"Delivery Note":"public/js/delivery_note.js",
+				"Delivery Note": "public/js/delivery_note.js",
+				"Landed Cost Voucher":"public/js/landed_cost_voucher.js",
 				}
 doctype_list_js = {
 					"Timesheet": "public/js/timesheet_list.js"

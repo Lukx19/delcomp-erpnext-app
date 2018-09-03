@@ -5,7 +5,6 @@
 	"js/delcomp.min.js": [
 		"public/js/delcomp.js",
 		"public/js/customer.js",
-		"public/js/navbar.html",
 		"public/js/templates/delcomp_contact.html"
 	]
 }
