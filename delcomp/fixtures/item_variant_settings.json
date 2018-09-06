@@ -202,9 +202,15 @@
    },
    {
     "field_name": "variant_attribute"
+   },
+   {
+    "field_name": "price"
+   },
+   {
+    "field_name": "price_uom"
    }
   ],
-  "modified": "2018-07-22 16:19:49.660744",
+  "modified": "2018-09-04 14:34:12.833557",
   "name": "Item Variant Settings"
  }
 ]

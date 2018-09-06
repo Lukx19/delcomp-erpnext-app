@@ -44,3 +44,19 @@ def gen_UOM(doc, method):
         doc.weight_per_unit = m3 * doc.density
 
 
+def calculate_price(doc, method):
+    if not doc.price or not doc.variant_of:
+        return
+    if doc.price_uom == doc.stock_uom:
+        doc.valuation_rate = doc.price
+    else:
+        uom_conversion = get_uom_line(doc.uoms,doc.price_uom)
+        if uom_conversion:
+             doc.valuation_rate = doc.price / uom_conversion.conversion_factor
+        else:
+            frappe.throw("Prosím vyplňte tabuľku prevodov s konverzným faktorom z mernej jednotky " +doc.price_uom)
+
+
+def fill_item_fields(doc, method):
+    gen_UOM(doc, method)
+    calculate_price(doc,method)

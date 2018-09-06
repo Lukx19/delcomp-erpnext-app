@@ -103,7 +103,7 @@ doc_events = {
 		"before_update_after_submit": "delcomp.delcomp.timesheet.timesheet.validate_after_submit",
 	},
 	"Item": {
-		"before_save":"delcomp.delcomp.doctype.item.gen_UOM"
+		"before_save":"delcomp.delcomp.doctype.item.fill_item_fields"
 	},
 	"Purchase Receipt": {
 		"onload": "delcomp.delcomp.doctype.stock.override_get_item_details",
