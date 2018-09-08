@@ -30,7 +30,7 @@ def get_timesheet_conditions(filters):
 	if filters.get("start_date"):
 		conds.append("`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
 	if filters.get("end_date"):
-		conds.append("`tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)")
+		conds.append("`tabTimesheet`.end_date < timestamp(%(end_date)s, %(end_time)s)")
 	if filters.get("employee"):
 		conds.append( "`tabTimesheet`.employee = %(employee)s")
 	if filters.get("project"):
