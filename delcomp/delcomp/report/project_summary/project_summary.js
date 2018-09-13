@@ -17,6 +17,12 @@ frappe.query_reports["Project Summary"] = {
 			"default": frappe.datetime.year_end()
 		},
 		{
+			"fieldname": "employee",
+			"label": __("Employee"),
+			"fieldtype": "Link",
+			"options": "Employee"
+		},
+		{
 			"fieldname": "project",
 			"label": __("Project"),
 			"fieldtype": "Link",

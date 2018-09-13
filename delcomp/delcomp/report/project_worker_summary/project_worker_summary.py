@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.desk.reportview import build_match_conditions
+from delcomp.delcomp.utils import combine_conditions
 
 def execute(filters=None):
 	if not filters:
@@ -32,6 +33,8 @@ def get_timesheet_conditions(filters):
 		conditions += " AND `tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)"
 	if filters.get("end_date"):
 		conditions += " AND `tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)"
+	if filters.get("employee"):
+		conditions += " AND `tabTimesheet`.employee = %(employee)s"
 	if filters.get("project"):
 		conditions += " AND `tabTimesheet`.project = %(project)s"
 	if filters.get("task"):
@@ -41,28 +44,51 @@ def get_timesheet_conditions(filters):
 		conditions += " AND %s" % match_conditions
 	return conditions
 
+
+
+def get_task_conditions(filters):
+	conditions = ""
+	if filters.get("project"):
+		conditions += combine_conditions(conditions)
+		conditions += " `tabTask`.project = %(project)s"
+	if filters.get("task"):
+		conditions += combine_conditions(conditions)
+		conditions += " `tabTimesheet`.name = %(task)s"
+	match_conditions = build_match_conditions("Task")
+	if match_conditions:
+		conditions += combine_conditions(conditions)
+		conditions += " %s" % match_conditions
+
+	return conditions
+
 def get_data(filters):
 	query = """
 		WITH timesheet_data AS
 			(SELECT
 				`tabTimesheet`.project ,
 				employee_name,
-				task_name,
 				task,
 				SUM(`tabTimesheet`.total_billable_hours) as hours_per_emp,
 				SUM(`tabTimesheet`.total_billable_amount) as pay_per_emp
 			FROM `tabTimesheet`
 			{timesheet_conds}
-			GROUP BY project,employee,task)
+			GROUP BY project,employee,task),
+		task_data AS
+		 	(SELECT
+			 	 name,
+				 subject
+			 FROM `tabTask`
+			 {task_conds})
 		SELECT
 			project,
-			task_name,
+			subject,
 			employee_name,
 			pay_per_emp,
 			hours_per_emp
 		FROM timesheet_data
-		ORDER BY project, task_name
-		""".format(timesheet_conds=get_timesheet_conditions(filters))
+		JOIN task_data ON timesheet_data.task = task_data.name
+		ORDER BY project, subject
+		""".format(timesheet_conds=get_timesheet_conditions(filters), task_conds= get_task_conditions(filters))
 	data = frappe.db.sql(query,filters,as_list=1)
 	return data
 
