@@ -11,6 +11,8 @@ frappe.ui.form.on("Stock Entry", {
 
 var update_uom_rate = function (cdt, cdn) {
     var row = locals[cdt][cdn]
+    if (!row.item_code)
+        return
     frappe.run_serially([
         () => frappe.timeout(2),
         () => frappe.call({

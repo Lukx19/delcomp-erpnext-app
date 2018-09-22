@@ -1,5 +1,7 @@
-var update_uom_rate = function(cdt,cdn){
+var update_uom_rate = function(frm,cdt,cdn){
     var row = locals[cdt][cdn]
+    if (!row.item_code)
+        return
     frappe.run_serially([
         () => frappe.timeout(2),
         () => frappe.call({
@@ -59,13 +61,16 @@ frappe.ui.form.on("Purchase Receipt Item", {
         var row = locals[cdt][cdn]
         frappe.run_serially([
             () => frappe.timeout(2),
-            () => frappe.model.set_value(cdt, cdn, "received_qty", row.custom_quantity),
+            () => frappe.model.set_value(cdt, cdn, "qty", row.custom_quantity),
+            () => frappe.model.set_value(cdt, cdn, "received_qty", row.custom_quantity)
         ])
     },
+
     item_code: function (frm, cdt, cdn) {
-        update_uom_rate(cdt,cdn)
+        update_uom_rate(frm, cdt, cdn)
+
     },
     price_list_rate: function (frm, cdt, cdn) {
-        update_uom_rate(cdt, cdn)
+        update_uom_rate(frm,cdt, cdn)
     }
 })

@@ -92,7 +92,7 @@ def get_events(start, end, filters=None):
 	conditions = get_event_conditions("Timesheet", filters)
 
 	return frappe.db.sql(
-		"""select `tabTimesheet Detail`.name as name,
+		"""SELECT `tabTimesheet Detail`.name as name,
 			`tabTimesheet Detail`.docstatus as status,
 			`tabTimesheet Detail`.parent as parent,
 			employee_name,
@@ -102,10 +102,11 @@ def get_events(start, end, filters=None):
 			`tabTimesheet`.project,
 			`tabTimesheet`.to_date as to_date,
 			CONCAT(employee_name,' \n Projekt: ',`tabTimesheet`.project,'\n Aktivita: ',activity,' \n Úloha: ',`tabTimesheet`.task_name,'\n', ' (', ROUND(total_hours,2),' hrs)') as title
-		from `tabTimesheet`, `tabTimesheet Detail`
-		where `tabTimesheet Detail`.parent = `tabTimesheet`.name
-			and `tabTimesheet`.docstatus < 2
-			and (from_date <= %(end)s and to_date >= %(start)s) {conditions} {match_cond}
+		FROM `tabTimesheet`, `tabTimesheet Detail`
+		WHERE `tabTimesheet Detail`.parent = `tabTimesheet`.name
+			AND `tabTimesheet`.docstatus < 2
+			AND (from_date <= %(end)s and to_date >= %(start)s) {conditions} {match_cond}
+		ORDER BY employee_name
 		""".format(conditions=conditions, match_cond = get_match_cond('Timesheet')),
 		{
 			"start": start,
