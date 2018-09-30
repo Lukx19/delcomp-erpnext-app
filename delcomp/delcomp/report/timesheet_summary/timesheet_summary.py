@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.desk.reportview import build_match_conditions
-from delcomp.delcomp.utils import combine_conditions
 
 def execute(filters=None):
 	if not filters:
@@ -27,21 +26,24 @@ def get_column():
 	]
 
 def get_timesheet_conditions(filters):
-	conditions = ""
+	conds = []
 	if filters.get("start_date"):
-		conditions = combine_conditions(conditions,"`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
+		conds.append("`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
 	if filters.get("end_date"):
-		conditions = combine_conditions(conditions," `tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)")
+		conds.append("`tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)")
 	if filters.get("employee"):
-		conditions = combine_conditions(conditions,"`tabTimesheet`.employee = %(employee)s")
+		conds.append( "`tabTimesheet`.employee = %(employee)s")
 	if filters.get("project"):
-		conditions = combine_conditions(conditions,"`tabTimesheet`.project = %(project)s")
+		conds.append( "`tabTimesheet`.project = %(project)s")
 	if filters.get("task"):
-		conditions = combine_conditions(conditions,"`tabTimesheet`.task = %(task)s")
+		conds.append( " `tabTimesheet`.task = %(task)s")
 	match_conditions = build_match_conditions("Timesheet")
 	if match_conditions:
-		conditions = combine_conditions(conditions,"%s" % match_conditions)
-	return conditions
+		conds.append("%s" % match_conditions)
+	if len(conds):
+		return "WHERE " + " AND ".join(conds)
+	else:
+		return ""
 
 
 def get_data(filters):

@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 import frappe
 from frappe import _
 from frappe.desk.reportview import build_match_conditions
-from delcomp.delcomp.utils import combine_conditions
 
 def execute(filters=None):
 	if not filters:
@@ -28,38 +27,41 @@ def get_column():
 	]
 
 def get_timesheet_conditions(filters):
-	conditions = " WHERE `tabTimesheet`.docstatus = 1"
+	conds = []
+	conds.append("`tabTimesheet`.docstatus = 1")
 	if filters.get("start_date"):
-		conditions += " AND `tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)"
+		conds.append("`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
 	if filters.get("end_date"):
-		conditions += " AND `tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)"
+		conds.append("`tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)")
 	if filters.get("employee"):
-		conditions += " AND `tabTimesheet`.employee = %(employee)s"
+		conds.append( "`tabTimesheet`.employee = %(employee)s")
 	if filters.get("project"):
-		conditions += " AND `tabTimesheet`.project = %(project)s"
+		conds.append( "`tabTimesheet`.project = %(project)s")
 	if filters.get("task"):
-		conditions += " AND `tabTimesheet`.task = %(task)s"
+		conds.append( " `tabTimesheet`.task = %(task)s")
 	match_conditions = build_match_conditions("Timesheet")
 	if match_conditions:
-		conditions += " AND %s" % match_conditions
-	return conditions
-
+		conds.append("%s" % match_conditions)
+	if len(conds):
+		return "WHERE " + " AND ".join(conds)
+	else:
+		return ""
 
 
 def get_task_conditions(filters):
-	conditions = ""
+	conds = []
 	if filters.get("project"):
-		conditions += combine_conditions(conditions)
-		conditions += " `tabTask`.project = %(project)s"
+		conds.append(" `tabTask`.project = %(project)s")
 	if filters.get("task"):
-		conditions += combine_conditions(conditions)
-		conditions += " `tabTimesheet`.name = %(task)s"
+		conds.append(" `tabTask`.name = %(task)s")
 	match_conditions = build_match_conditions("Task")
 	if match_conditions:
-		conditions += combine_conditions(conditions)
-		conditions += " %s" % match_conditions
+		conds.append(" %s" % match_conditions)
 
-	return conditions
+	if len(conds):
+		return "WHERE " + " AND ".join(conds)
+	else:
+		return ""
 
 def get_data(filters):
 	query = """
