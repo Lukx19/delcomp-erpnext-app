@@ -13,3 +13,8 @@ delcomp/docs/current
 __pycache__
 *~
 tags
+yarn.lock
+node_modules
+cypress/screenshots
+cypress/videos
+
