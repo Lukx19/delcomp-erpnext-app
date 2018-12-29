@@ -6,6 +6,7 @@
 		"public/js/delcomp.js",
 		"public/js/customer.js",
 		"public/js/templates/delcomp_contact.html",
-		"public/js/navbar.html"
+		"public/js/navbar.html",
+		"public/js/transaction.js"
 	]
 }

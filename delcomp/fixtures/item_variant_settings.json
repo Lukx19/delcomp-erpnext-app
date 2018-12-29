@@ -208,9 +208,15 @@
    },
    {
     "field_name": "price_uom"
+   },
+   {
+    "field_name": "batch_number_series"
+   },
+   {
+    "field_name": "create_new_batch"
    }
   ],
-  "modified": "2018-09-04 14:34:12.833557",
+  "modified": "2018-12-18 10:33:55.668793",
   "name": "Item Variant Settings"
  }
 ]
