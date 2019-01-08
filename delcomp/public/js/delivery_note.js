@@ -1,27 +1,3 @@
-var update_uom_rate = function (cdt, cdn) {
-    var row = locals[cdt][cdn]
-    if (!row.item_code)
-        return
-    frappe.run_serially([
-        () => frappe.timeout(2),
-        () => frappe.call({
-            method: "erpnext.stock.get_item_details.get_conversion_factor",
-            args: {
-                item_code: row.item_code,
-                uom: "bm"
-            },
-            callback: function (r) {
-                var conversion = r.message.conversion_factor
-                if (conversion) {
-                    frappe.model.set_value(cdt, cdn, "rate_in_uom", row.base_rate * conversion)
-                } else {
-                    frappe.model.set_value(cdt, cdn, "rate_in_uom", row.base_rate)
-                }
-            }
-        })
-    ])
-}
-
 frappe.ui.form.on("Delivery Note", {
     setup: function () {
         console.log("setup")
@@ -31,8 +7,12 @@ frappe.ui.form.on("Delivery Note", {
             callback: function (r) { }
         });
     },
-    onload: function () {
+    onload: function (frm) {
         console.log("onload")
+        if (frm.doc.__islocal) {
+            frm.fields_dict.items.grid.remove_all();
+            frm.refresh_field("items");
+        }
         frappe.call({
             method: "delcomp.delcomp.doctype.stock.overridejs_get_item_details",
             args: {},
@@ -67,10 +47,10 @@ frappe.ui.form.on("Delivery Note Item", {
         ]);
     },
     item_code: function (frm, cdt, cdn) {
-        update_uom_rate(cdt,cdn)
+        update_uom_rate(cdt,cdn,"base_rate")
     },
     price_list_rate: function (frm, cdt, cdn) {
-        update_uom_rate(cdt, cdn)
+        update_uom_rate(cdt, cdn,"base_rate")
     }
 
 })

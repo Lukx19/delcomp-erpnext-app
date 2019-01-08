@@ -17,7 +17,6 @@ def execute(filters=None):
 	columns = get_columns()
 	items = get_items(filters)
 	sle = get_stock_ledger_entries(filters, items)
-
 	# if no stock ledger entry found return
 	if not sle:
 		return columns, []
@@ -27,16 +26,19 @@ def execute(filters=None):
 	item_reorder_detail_map = get_item_reorder_details(item_map.keys())
 
 	data = []
-	for (company, item, warehouse) in sorted(iwb_map):
+	for (company, item, warehouse,batch_no) in sorted(iwb_map):
 		if item_map.get(item):
-			qty_dict = iwb_map[(company, item, warehouse)]
+			qty_dict = iwb_map[(company, item, warehouse,batch_no)]
 			item_reorder_level = 0
 			item_reorder_qty = 0
 			if item + warehouse in item_reorder_detail_map:
 				item_reorder_level = item_reorder_detail_map[item + warehouse]["warehouse_reorder_level"]
 				item_reorder_qty = item_reorder_detail_map[item + warehouse]["warehouse_reorder_qty"]
 
-			report_data = [item, item_map[item]["item_name"],
+			report_data = [
+				item,
+				# item_map[item]["item_name"],
+				batch_no,
 				item_map[item]["item_group"],
 				item_map[item]["stock_uom"],
 				qty_dict.bal_qty,
@@ -45,7 +47,6 @@ def execute(filters=None):
 				qty_dict.out_qty,
 
 			]
-			frappe.errprint(frappe.get_roles(frappe.session.user))
 			if "Stock Master Manager" in frappe.get_roles(frappe.session.user):
 				report_data.extend([
 					qty_dict.bal_val,
@@ -59,19 +60,20 @@ def get_columns():
 	"""return columns"""
 
 	columns = [
-		_("Item")+":Link/Item:50",
-		_("Item Name")+"::200",
-		_("Item Group")+":Link/Item Group:100",
-		_("Stock UOM") + ":Link/UOM:90",
-		_("Balance Qty")+":Float:100",
-		_("Opening Qty")+":Float:100",
+		_("Item")+":Link/Item:200",
+		# _("Item Name")+"::200",
+		_("Batch No")+":Link/Batch:150",
+		_("Item Group")+":Link/Item Group:80",
+		_("Stock UOM") + ":Link/UOM:30",
+		_("Balance Qty")+":Float:80",
+		_("Opening Qty")+":Float:80",
 		_("In Qty")+":Float:80",
 		_("Out Qty")+":Float:80",
 	]
 	if "Stock Master Manager" in frappe.get_roles(frappe.session.user):
 		columns.extend([
-			_("Balance Value")+":Float:100",
-			_("Valuation Rate") + ":Float:90",
+			_("Balance Value")+":Float:80",
+			_("Valuation Rate") + ":Float:80",
 			])
 
 	return columns
@@ -107,7 +109,7 @@ def get_stock_ledger_entries(filters, items):
 	return frappe.db.sql("""
 		select
 			sle.item_code, warehouse, sle.posting_date, sle.actual_qty, sle.valuation_rate,
-			sle.company, sle.voucher_type, sle.qty_after_transaction, sle.stock_value_difference
+			sle.company, sle.voucher_type, sle.qty_after_transaction, sle.stock_value_difference, sle.batch_no
 		from
 			`tabStock Ledger Entry` sle force index (posting_sort_index)
 		where sle.docstatus < 2 %s %s
@@ -120,7 +122,7 @@ def get_item_warehouse_map(filters, sle):
 	to_date = getdate(filters.get("to_date"))
 
 	for d in sle:
-		key = (d.company, d.item_code, d.warehouse)
+		key = (d.company, d.item_code, d.warehouse,d.batch_no)
 		if key not in iwb_map:
 			iwb_map[key] = frappe._dict({
 				"opening_qty": 0.0, "opening_val": 0.0,
@@ -130,7 +132,7 @@ def get_item_warehouse_map(filters, sle):
 				"val_rate": 0.0
 			})
 
-		qty_dict = iwb_map[(d.company, d.item_code, d.warehouse)]
+		qty_dict = iwb_map[(d.company, d.item_code, d.warehouse,d.batch_no)]
 
 		if d.voucher_type == "Stock Reconciliation":
 			qty_diff = flt(d.qty_after_transaction) - qty_dict.bal_qty
@@ -155,13 +157,13 @@ def get_item_warehouse_map(filters, sle):
 		qty_dict.bal_qty += qty_diff
 		qty_dict.bal_val += value_diff
 
-	iwb_map = filter_items_with_no_transactions(iwb_map)
+	# iwb_map = filter_items_with_no_transactions(iwb_map)
 
 	return iwb_map
 
 def filter_items_with_no_transactions(iwb_map):
-	for (company, item, warehouse) in sorted(iwb_map):
-		qty_dict = iwb_map[(company, item, warehouse)]
+	for (company, item, warehouse, batch_no) in sorted(iwb_map):
+		qty_dict = iwb_map[(company, item, warehouse, batch_no)]
 
 		no_transactions = True
 		float_precision = cint(frappe.db.get_default("float_precision")) or 3
@@ -172,7 +174,7 @@ def filter_items_with_no_transactions(iwb_map):
 				no_transactions = False
 
 		if no_transactions:
-			iwb_map.pop((company, item, warehouse))
+			iwb_map.pop((company, item, warehouse, batch_no))
 
 	return iwb_map
 

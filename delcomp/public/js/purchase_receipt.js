@@ -1,35 +1,17 @@
-var update_uom_rate = function(frm,cdt,cdn){
-    var row = locals[cdt][cdn]
-    if (!row.item_code)
-        return
-    frappe.run_serially([
-        () => frappe.timeout(2),
-        () => frappe.call({
-            method: "erpnext.stock.get_item_details.get_conversion_factor",
-            args: {
-                item_code: row.item_code,
-                uom: "bm"
-            },
-            callback: function (r) {
-                var conversion = r.message.conversion_factor
-                if (conversion) {
-                    frappe.model.set_value(cdt, cdn, "rate_in_uom", row.base_rate * conversion)
-                } else {
-                    frappe.model.set_value(cdt, cdn, "rate_in_uom", row.base_rate)
-                }
-            }
-        })
-    ])
-}
-
 frappe.ui.form.on("Purchase Receipt", {
-    onload: function () {
+    onload: function (frm) {
         console.log("onload")
         frappe.call({
             method: "delcomp.delcomp.doctype.stock.overridejs_get_item_details",
             args: {},
             callback: function (r) { }
         });
+
+
+        if (frm.doc.__islocal) {
+            frm.fields_dict.items.grid.remove_all();
+            frm.refresh_field("items");
+        }
     },
     setup: function () {
         console.log("setup")
@@ -62,15 +44,16 @@ frappe.ui.form.on("Purchase Receipt Item", {
         frappe.run_serially([
             () => frappe.timeout(2),
             () => frappe.model.set_value(cdt, cdn, "qty", row.custom_quantity),
-            () => frappe.model.set_value(cdt, cdn, "received_qty", row.custom_quantity)
+            () => frappe.model.set_value(cdt, cdn, "received_qty", row.custom_quantity),
+            () => frappe.model.trigger("qty",row.custom_quantity, row),
         ])
     },
 
-    item_code: function (frm, cdt, cdn) {
-        update_uom_rate(frm, cdt, cdn)
+    item_code: function (frm,cdt, cdn) {
+        update_uom_rate(cdt, cdn, "base_rate");
 
     },
-    price_list_rate: function (frm, cdt, cdn) {
-        update_uom_rate(frm,cdt, cdn)
+    price_list_rate: function (frm,cdt, cdn) {
+        update_uom_rate(cdt, cdn, "base_rate");
     }
 })

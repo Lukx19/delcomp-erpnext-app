@@ -7,6 +7,7 @@
 		"public/js/customer.js",
 		"public/js/templates/delcomp_contact.html",
 		"public/js/navbar.html",
-		"public/js/transaction.js"
+		"public/js/serial_no_batch_selector.js",
+		"public/js/stock_overrides.js"
 	]
 }
