@@ -37,8 +37,6 @@ def get_timesheet_conditions(filters):
 		conds.append("`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
 	if filters.get("end_date"):
 		conds.append("`tabTimesheet`.end_date <= timestamp(%(end_date)s, %(end_time)s)")
-	if filters.get("employee"):
-		conds.append( "`tabTimesheet`.employee = %(employee)s")
 	if filters.get("project"):
 		conds.append( "`tabTimesheet`.project = %(project)s")
 	if filters.get("task"):
@@ -67,11 +65,42 @@ def get_task_conditions(filters):
 	else:
 		return ""
 
+
+def get_final_conditions(filters):
+	conds = []
+	if filters.get("employee"):
+		conds.append( "employee = %(employee)s")
+
+	if len(conds):
+		return "WHERE " + " AND ".join(conds)
+	else:
+		return ""
+
+def selected_columns():
+	columns = [
+		"project",
+		"subject",
+		"employee_name",
+		"pay_per_emp",
+		# "hours_per_emp",
+		# "total_billing_hours",
+
+	]
+	if "Project Master Manager" in frappe.get_roles(frappe.session.user):
+		columns.extend([
+			"budget",
+			"bonus",
+			"bonus_based_on_hours"
+		])
+	return ",".join(columns)
+
+
 def get_data(filters):
 	query = """
 		WITH timesheet_data AS
 			(SELECT
 				`tabTimesheet`.project ,
+				employee,
 				employee_name,
 				task,
 				SUM(`tabTimesheet`.total_billable_hours) as hours_per_emp,
@@ -98,19 +127,21 @@ def get_data(filters):
 			(SELECT *
 			FROM task_budget
 			JOIN task_totals ON  task_budget.name = task_totals.task)
-  		SELECT
-			project,
-			subject,
-			employee_name,
-			budget,
-			(budget - total_billing_amount) as bonus,
-			pay_per_emp,
-			hours_per_emp,
-			total_billing_hours,
-			ROUND((budget - total_billing_amount) * (hours_per_emp/total_billing_hours),3) AS bonus_based_on_hours
-		FROM timesheet_data
-		JOIN task_data ON timesheet_data.task = task_data.task
-		ORDER BY project, subject
+  		df AS
+		  	(SELECT
+				project,
+				subject,
+				employee,
+				employee_name,
+				budget,
+				(budget - total_billing_amount) as bonus,
+				pay_per_emp,
+				hours_per_emp,
+				total_billing_hours,
+				ROUND((budget - total_billing_amount) * (hours_per_emp/total_billing_hours),3) AS bonus_based_on_hours
+			FROM timesheet_data
+			JOIN task_data ON timesheet_data.task = task_data.task)
+			ORDER BY project, subject
 		""".format(timesheet_conds=get_timesheet_conditions(filters), task_conds= get_task_conditions(filters))
 	data = frappe.db.sql(query,filters,as_list=1)
 	return data
