@@ -19,6 +19,13 @@ var render_multiple_add = function (frm) {
 }
 
 var add_generate_batch_button = function (frm) {
+    var button_label = __("Generate Batch Numbers")
+    // remove  button if exists
+    let btn = frm.fields_dict.items.grid.custom_buttons[button_label]
+    if (btn) {
+        btn.addClass("hidden");
+    }
+    frm.refresh_field("items");
     if (frm.doc.__islocal) {
         return;
     }
@@ -26,7 +33,7 @@ var add_generate_batch_button = function (frm) {
         return;
     }
     var grid = frm.fields_dict.items.grid;
-    grid.add_custom_button( __("Generate Batch Numbers"), function () {
+    grid.add_custom_button( button_label, function () {
         // console.log(grid);
         var dialog = new frappe.ui.Dialog({
 			title: "Choose batch series code",
@@ -57,7 +64,7 @@ var add_generate_batch_button = function (frm) {
             });
             // console.log(item_codes)
             if (item_count == 0) {
-                frappe.throw(__("You have zero items with empty batch number field. If you want to generate batch numbers you need to have empty batch number fields in the item table."));
+                frappe.throw(__("Položky v tabľke buď už majú nastavené číslo várky, alebo položky nepotrebujú zadať číslo várky. Ak chcete generovať nové čísla várok prosím vymažte čísla várok z tabuľky"));
             }else{
                 frappe.call({
                     method: "delcomp.delcomp.api.create_batch_entries",
