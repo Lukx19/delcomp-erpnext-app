@@ -51,6 +51,13 @@ frappe.ui.form.on("Delivery Note Item", {
     },
     price_list_rate: function (frm, cdt, cdn) {
         update_uom_rate(cdt, cdn,"base_rate")
+    },
+
+    batch_no: function (frm, cdt, cdn) {
+        var row = frappe.model.get_doc(cdt, cdn);
+        if (row && !row.batch_no) {
+            erpnext.show_serial_batch_selector(frm, row);
+        }
     }
 
 })
