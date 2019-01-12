@@ -18,6 +18,9 @@
  "roles": [
   {
    "role": "Project Master Manager"
-  }
+  },
+  {
+    "role": "Project Manager"
+   }
  ]
 }

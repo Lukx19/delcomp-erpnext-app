@@ -17,22 +17,9 @@ def execute(filters=None):
 	data = get_data(filters)
 	return columns, data
 
-def get_column():
-	return [
-		_("Project") + ":Link/Project:120",
-		_("Task name") + "::150",
-		_("Employee Name") + "::150",
-		_("Budget") + ":Currency:70",
-		_("Bonus") + ":Currency:70",
-		_("Payed to emp") + ":Currency:70",
-		_("Time worked by emp") + ":Float:70",
-		_("Work hours in task") + ":Float:70",
-		_("Bonus based on work hours") + ":Currency:15"
-	]
-
-def get_timesheet_conditions(filters):
+def timesheet_conditions(filters):
 	conds = []
-	conds.append("`tabTimesheet`.docstatus = 1")
+	conds.append("`tabTimesheet`.docstatus > 0")
 	if filters.get("start_date"):
 		conds.append("`tabTimesheet`.start_date >= timestamp(%(start_date)s, %(start_time)s)")
 	if filters.get("end_date"):
@@ -49,16 +36,27 @@ def get_timesheet_conditions(filters):
 	else:
 		return ""
 
-
-def get_task_conditions(filters):
+def task_conditions(filters):
 	conds = []
 	if filters.get("project"):
-		conds.append(" `tabTask`.project = %(project)s")
+		conds.append("`tabTask`.project = %(project)s")
 	if filters.get("task"):
 		conds.append(" `tabTask`.name = %(task)s")
-	match_conditions = build_match_conditions("Task")
-	if match_conditions:
-		conds.append(" %s" % match_conditions)
+	if filters.get("start_date") and filters.get("end_date"):
+		time_combs = """
+					((`tabTask`.act_start_date <= timestamp(%(start_date)s, %(start_time)s)
+						AND `tabTask`.act_end_date >= timestamp(%(end_date)s, %(end_time)s))
+					OR (`tabTask`.act_start_date >= timestamp(%(start_date)s, %(start_time)s)
+						AND `tabTask`.act_start_date <= timestamp(%(end_date)s, %(end_time)s))
+					OR (`tabTask`.act_end_date >= timestamp(%(start_date)s, %(start_time)s)
+						AND `tabTask`.act_end_date <= timestamp(%(end_date)s, %(end_time)s)))
+					"""
+		conds.append(time_combs)
+	else:
+		if filters.get("start_date"):
+			conds.append("`tabTask`.act_end_date >= timestamp(%(start_date)s, %(start_time)s)")
+		if filters.get("end_date"):
+			conds.append("`tabTask`.act_start_date <= timestamp(%(end_date)s, %(end_time)s)")
 
 	if len(conds):
 		return "WHERE " + " AND ".join(conds)
@@ -66,7 +64,7 @@ def get_task_conditions(filters):
 		return ""
 
 
-def get_final_conditions(filters):
+def final_conditions(filters):
 	conds = []
 	if filters.get("employee"):
 		conds.append( "employee = %(employee)s")
@@ -79,10 +77,10 @@ def get_final_conditions(filters):
 def selected_columns():
 	columns = [
 		"project",
-		"subject",
+		"task_name",
 		"employee_name",
 		"pay_per_emp",
-		# "hours_per_emp",
+		"hours_per_emp",
 		# "total_billing_hours",
 
 	]
@@ -94,6 +92,23 @@ def selected_columns():
 		])
 	return ",".join(columns)
 
+def get_column():
+	columns = [
+		_("Projekt") + ":Link/Project:120",
+		_("Úloha") + "::150",
+		_("Zamestnanec") + "::150",
+		_("Plat") + ":Currency:50",
+		_("Odpracované hodiny") + ":Float:50",
+		# _("Work hours in task") + ":Float:70",
+	]
+
+	if "Project Master Manager" in frappe.get_roles(frappe.session.user):
+		columns.extend([
+		_("Budget") + ":Currency:50",
+		_("Bonus") + ":Currency:50",
+		_("Bonus/hod") + ":Currency:50"
+		])
+	return columns
 
 def get_data(filters):
 	query = """
@@ -108,41 +123,41 @@ def get_data(filters):
 			FROM `tabTimesheet`
 			{timesheet_conds}
 			GROUP BY project,employee,task),
-		task_budget AS
-		 	(SELECT
-			 	budget,
-			 	`tabTask`.name,
-				 subject
-			 FROM `tabTask`
-			 {task_conds}),
-		task_totals AS
+		task_data AS
 			(SELECT
-				task,
-				SUM(total_billable_hours) AS total_billing_hours,
-				SUM(total_billable_amount) AS total_billing_amount
-			FROM `tabTimesheet`
-			{timesheet_conds}
+				`tabTask`.name AS task,
+				`tabTask`.budget AS budget,
+				`tabTask`.subject AS task_name,
+				SUM(IFNULL(total_billable_hours,0)) AS total_billing_hours,
+				SUM(IFNULL(total_billable_amount,0)) AS total_billing_amount,
+				(`tabTask`.budget - SUM(IFNULL(total_billable_amount,0))) AS bonus
+			FROM `tabTask`
+			LEFT JOIN `tabTimesheet` ON
+				(`tabTimesheet`.task = `tabTask`.name AND `tabTimesheet`.docstatus > 0)
+			{task_conds}
 			GROUP BY task),
-  		task_data AS
-			(SELECT *
-			FROM task_budget
-			JOIN task_totals ON  task_budget.name = task_totals.task)
-  		df AS
-		  	(SELECT
+		final_data AS
+			(SELECT
 				project,
-				subject,
+				task_name,
 				employee,
 				employee_name,
 				budget,
-				(budget - total_billing_amount) as bonus,
+				bonus,
 				pay_per_emp,
 				hours_per_emp,
 				total_billing_hours,
-				ROUND((budget - total_billing_amount) * (hours_per_emp/total_billing_hours),3) AS bonus_based_on_hours
+				ROUND(bonus * (hours_per_emp/total_billing_hours),3) AS bonus_based_on_hours
 			FROM timesheet_data
 			JOIN task_data ON timesheet_data.task = task_data.task)
-			ORDER BY project, subject
-		""".format(timesheet_conds=get_timesheet_conditions(filters), task_conds= get_task_conditions(filters))
+		SELECT
+			{selected_columns}
+			FROM final_data
+			{final_conds}
+			ORDER BY project, task_name
+		""".format(selected_columns = selected_columns(),timesheet_conds=timesheet_conditions(filters), task_conds= task_conditions(filters),final_conds=final_conditions(filters))
+	# frappe.errprint("kl")
+	# frappe.errprint(query)
 	data = frappe.db.sql(query,filters,as_list=1)
 	return data
 
