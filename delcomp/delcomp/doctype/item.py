@@ -45,7 +45,7 @@ def gen_UOM(doc, method):
 
 
 def calculate_price(doc, method):
-    if not doc.price or not doc.variant_of:
+    if not doc.price:
         return
     if doc.price_uom == doc.stock_uom:
         doc.valuation_rate = doc.price

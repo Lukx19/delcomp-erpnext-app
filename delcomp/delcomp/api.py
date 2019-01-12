@@ -37,14 +37,14 @@ def get_batches_and_amounts(doctype, txt, item, warehouse,max_lines=5):
 def create_batch_entries(item_codes,batch_number_series, doctype,doctype_name):
 	batch_numbers = []
 	i =0
-	for row_id,item_code in json.loads(item_codes).items():
-		batch_id = make_autoname(batch_number_series)
-		batch_no = frappe.get_doc(dict(
-						doctype='Batch',
-						item=item_code,
-						batch_id=batch_id,
-						reference_doctype=doctype,
-						reference_name=doctype_name)).insert().name
-		# batch_no = batch_id
-		batch_numbers.append((row_id,item_code,batch_no))
+	for row_id, item_code in json.loads(item_codes).items():
+		if frappe.get_value("Item",item_code,"has_batch_no"):
+			batch_id = make_autoname(batch_number_series)
+			batch_no = frappe.get_doc(dict(
+							doctype='Batch',
+							item=item_code,
+							batch_id=batch_id,
+							reference_doctype=doctype,
+							reference_name=doctype_name)).insert().name
+			batch_numbers.append((row_id,item_code,batch_no))
 	return batch_numbers
